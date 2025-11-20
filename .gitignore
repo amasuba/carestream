@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Python
+__pycache__/
+\*.py[cod]
+*.egg-info/
+venv/
+ENV/
+env/
+/.mypy_cache
+
+# Django
+db.sqlite3
+media/
+
+# Logs
+\*.log
+
+# Docker
+docker-compose.override.yml
