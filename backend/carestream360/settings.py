@@ -44,7 +44,14 @@ INSTALLED_APPS += [
     "apps.monitoring",
 ]
 
+# CORS for the frontend dev/prod demo
+INSTALLED_APPS += [
+    "corsheaders",
+]
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    # keep this near the top so it can add CORS headers early
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -53,6 +60,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+# For the local demo it's okay to allow all origins. Adjust for production.
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "carestream360.urls"
 

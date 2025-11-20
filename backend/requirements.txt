@@ -1,3 +1,5 @@
 Django==5.2.8
 requests==2.31.0
-numpy==1.27.6
+# Use a numpy release compatible with the base image
+numpy==1.26.4
+django-cors-headers==4.0.0
