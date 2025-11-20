@@ -3,3 +3,4 @@ requests==2.31.0
 # Use a numpy release compatible with the base image
 numpy==1.26.4
 django-cors-headers==4.0.0
+psycopg2-binary==2.9.7

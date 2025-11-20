@@ -6,6 +6,11 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=1
+      - POSTGRES_DB=carestream360
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
     depends_on:
       - db
   frontend:
@@ -22,6 +27,18 @@ services:
       POSTGRES_DB: carestream360
     ports:
       - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4:7
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@carestream.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
   session-collector:
     build: ./services/session-collector
     ports:
@@ -36,3 +53,7 @@ services:
       - "8003:8000"
     depends_on:
       - backend
+
+volumes:
+  pgadmin-data:
+    driver: local

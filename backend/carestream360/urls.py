@@ -18,8 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
+from apps.monitoring import views as monitoring_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("apps.monitoring.urls")),
+    # Root redirect to the frontend (helpful when opening port 8000 in a browser)
+    path("", monitoring_views.root_redirect),
+    # Lightweight dashboard accessible on the backend port (http://localhost:8000/dashboard/)
+    path("dashboard/", monitoring_views.simple_dashboard),
 ]

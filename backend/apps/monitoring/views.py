@@ -180,3 +180,67 @@ def scenario_state(request):
 from django.shortcuts import render
 
 # Create your views here.
+
+
+from django.http import HttpResponse, HttpResponseRedirect
+
+
+def root_redirect(request):
+        """Redirect root requests to the frontend dev site (hosted on port 3005).
+
+        This helps users who open `http://localhost:8000/` in a browser to reach
+        the frontend served by the `frontend` container on port 3005.
+        """
+        return HttpResponseRedirect("http://localhost:3005/")
+
+
+def simple_dashboard(request):
+        """Return a minimal HTML dashboard that polls `/api/scenario/state`.
+
+        This provides a lightweight visualization on the backend port (8000)
+        so the project can be inspected even if the frontend bundle has issues
+        in the browser.
+        """
+        html = """
+        <!doctype html>
+        <html>
+        <head>
+            <meta charset="utf-8" />
+            <title>CareStream Simple Dashboard</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .card { border: 1px solid #ddd; padding: 12px; margin-bottom: 12px; border-radius: 6px; }
+                .title { font-weight: bold; }
+            </style>
+        </head>
+        <body>
+            <h2>CareStream Simple Dashboard</h2>
+            <div id="status" class="card">Loading...</div>
+            <div id="tickets" class="card">Tickets will appear here.</div>
+            <div id="notifications" class="card">Notifications will appear here.</div>
+
+            <script>
+                async function fetchState(){
+                    try{
+                        const res = await fetch('/api/scenario/state');
+                        const data = await res.json();
+                        document.getElementById('status').innerHTML = `Running: ${data.running} — Step: ${data.current_step} <br/> Session: ${JSON.stringify(data.session)}`;
+
+                        const tEl = document.getElementById('tickets');
+                        if((data.tickets || []).length === 0) tEl.innerHTML = 'No tickets.';
+                        else tEl.innerHTML = '<div class="title">Tickets</div>' + data.tickets.map(t=>`<div><b>${t.title}</b> — ${t.priority} — ${t.assigned_to}</div>`).join('');
+
+                        const nEl = document.getElementById('notifications');
+                        if((data.notifications || []).length === 0) nEl.innerHTML = 'No notifications.';
+                        else nEl.innerHTML = '<div class="title">Notifications</div>' + data.notifications.map(n=>`<div>${n.sent_at}: ${n.message}</div>`).join('');
+                    }catch(err){
+                        document.getElementById('status').innerText = 'Error fetching state: '+err;
+                    }
+                }
+                fetchState();
+                setInterval(fetchState, 2000);
+            </script>
+        </body>
+        </html>
+        """
+        return HttpResponse(html)
