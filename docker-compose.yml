@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+    depends_on:
+      - db
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: carestream360
+    ports:
+      - "5432:5432"
+  session-collector:
+    build: ./services/session-collector
+    ports:
+      - "8001:8001"
+  ml-predictor:
+    build: ./ml_models
+    ports:
+      - "8002:8002"
+  demo-server:
+    build: ./demo_server
+    ports:
+      - "8003:8000"
+    depends_on:
+      - backend
